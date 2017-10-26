@@ -1,17 +1,22 @@
-#ifndef TABLERO_H
+﻿#ifndef TABLERO_H
 #define TABLERO_H
 
 class Tablero{
     public:
-        int tabla[8][8];
+    	int solucion[8];
+        char tabla[8][8];
         int tablaTempo[8][8];
          Tablero() {
-            int tabla[8][8];
+            char tabla[8][8];
             int tablaTempo[8][8];
         }
         void iniciaTablas();
         void imprimeTabla ();
+        void Array();
+        void TableroEnArray(int i, int j);
+        void imprimeArray ();
         void movimientoAlfil (int i, int j);
+        void movimientoReina (int i, int j);
         void pintaMovimientosPosibles(int *X, int *Y, int tam, char pieza);
         bool isInCoord(int i, int j, int *coordR, int *coordC, int tam);
         void muevePieza(int beforeX, int beforeY, int afterX, int afterY, char pieza);
@@ -19,17 +24,12 @@ class Tablero{
 };
 
 
-/* Inicializa el tablero y el tablero temporal */
+/* Inicializa el tablero vacío */
 void Tablero::iniciaTablas(){
     int i,j;
     for (i=0;i<8;i++)
         for(j=0;j<8;j++)
-            tabla[i][j]=0;
-    
-
-    for (i=0;i<8;i++)
-        for(j=0;j<8;j++)
-            tablaTempo[i][j]=0;
+            tabla[i][j]='-';
 }
 
 /* Imprime el estado actual del tablero */
@@ -39,14 +39,35 @@ void Tablero::imprimeTabla (){
 
     for (i=0; i<8; i++) {
         for (j=0; j<8; j++) {
-            printf("%i\t", tabla[i][j]);
+            printf("%c\t", tabla[i][j]);
+            //cout << tabla[i][j];
         }
         printf("\n");
         puts("");
     }
 }
 
-/*movimiento en diagonal*/
+void Tablero::Array(){ //genera array de 8 lleno de -1
+	for (int a=0;a<8;a++)
+            solucion[a]=-1;
+}
+
+/* Imprime el estado actual del Array*/
+void Tablero::imprimeArray (){
+    int i;
+    printf("\n\n");
+    printf("[");
+    for (i=0; i<8; i++) {
+            printf("%i,", solucion[i]);
+    }
+    printf("]\n");
+}
+
+void Tablero::TableroEnArray(int i, int j){
+	solucion[i]=j;
+}
+
+/*movimiento Alfil*/
 //esta funcion recibe 2 parámetros que es la posición el Alfil
 void Tablero::movimientoAlfil (int i, int j){
     int temp1, temp2, x, y;
@@ -124,6 +145,98 @@ void Tablero::movimientoAlfil (int i, int j){
     }	*/
 
 }
+
+/*movimiento en Reina*/
+//esta funcion recibe 2 parámetros que es la posición de la Dama
+void Tablero::movimientoReina (int i, int j){
+    int temp1, temp2, x, y;
+    temp1=i;
+    temp2=j;
+    x=0;
+    y=0;
+    //////////////////diagonal principal
+    for (i=temp1; i<8; i++) {
+    	y=0;
+    	for (j=temp2; j<8; j++) {
+        	if(x==y){
+        		tabla[i][j]='-';    
+        	}else{
+        		//nada
+        	}
+        	y++;
+        }
+        x++;
+    }
+
+    x=0;
+    for (i=temp1; i>=0; i--) {
+    	y=0;
+    	for (j=temp2; j>=0; j--) {
+        	if(x==y){
+        		tabla[i][j]='-';    
+        	}else{
+        		//nada
+        	}
+        	y++;
+        }
+        x++;
+    }
+
+
+    //////////// anti-diagonal
+    x=0;
+    for (i=temp1; i>=0; i--) {
+    	y=0;
+    	for (j=temp2; j<8; j++) {
+        	if(x==y){
+        		tabla[j][i]='-';    
+        	}else{
+        		//nada
+        	}
+        	y++;
+        }
+        x++;
+    }
+
+    x=0;
+    for (i=temp1; i<8; i++) {
+    	y=0;
+    	for (j=temp2; j>=0; j--) {
+        	if(x==y){
+        		tabla[j][i]='-';    
+        	}else{
+        		//nada
+        	}
+        	y++;
+        }
+        x++;
+    }
+
+    //Columna Superior
+	for (i=temp1; i>=0; i--) {
+        		tabla[i][temp2]='-';
+    }
+
+
+    //Columna Inferior
+	for (i=temp1; i<8; i++) {
+        		tabla[i][temp2]='-';
+    }
+
+    //Renglon Superior
+	for (j=temp2; j>=0; j--) {
+        		tabla[temp1][j]='-';
+    }
+
+	//Renglon Inferior
+	for (j=temp2; j<8; j++) {
+        		tabla[temp1][j]='-';
+    }
+//tabla[temp1][temp2]='♛';
+  tabla[temp1][temp2]='Q';
+}
+
+
 
 
 /* Muestra los movimientos posibles dada una pieza. La muestra en tabla temporal, y no modifica
